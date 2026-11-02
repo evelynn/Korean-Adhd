@@ -24,10 +24,21 @@ try {
     .replace(/(?:\r?\n)+$/, "")
     .replaceAll("${CLAUDE_SKILL_DIR}", path.resolve(skillDir).replaceAll("\\", "/"));
 
+  // 회사어투 옵션은 상시 모드 위에 얹는다. 플래그가 있어야만 주입한다.
+  const companyFlag = path.join(claudeDir, ".korean-adhd-company");
+  const companyPath = path.join(skillDir, "references", "company-tone.md");
+  const companyOn = fs.existsSync(companyFlag) && fs.existsSync(companyPath);
+  const companyNote = companyOn
+    ? `회사어투 옵션 켜짐(상시). 맨 끝의 회사어투 옵션 장을 따른다. 없애려면 ${companyFlag} 를 지운다.\n`
+    : "";
+  const company = companyOn
+    ? `\n\n${fs.readFileSync(companyPath, "utf8").replace(/(?:\r?\n)+$/, "")}`
+    : "";
+
   process.stdout.write(
     "KOREAN-ADHD 모드 켜짐(상시). 아래 규칙은 모든 답변에 적용한다. " +
       '"stop adhd mode" 또는 "ADHD 모드 꺼"는 이번 세션에서 끈다. ' +
-      `상시 켜기를 없애려면 ${flagPath} 를 지운다.\n\n${body}\n`,
+      `상시 켜기를 없애려면 ${flagPath} 를 지운다.\n${companyNote}\n${body}${company}\n`,
   );
 } catch {
   process.exit(0);

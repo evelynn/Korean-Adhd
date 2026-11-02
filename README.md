@@ -31,6 +31,32 @@ New-Item -ItemType File "$HOME\.claude\.korean-adhd-always"
 
 i-have-adhd를 쓰고 있다면 옮긴 뒤 끄기를 권장합니다. 함께 켜도 이 플러그인의 규칙을 따르지만 비슷한 규칙이 두 번 주입됩니다.
 
+## 회사어투 옵션
+
+답변을 회사 보고서의 보고체로 줄입니다. 문장 끝은 "~함", "~완료", "~적용", "~확인 필요"로 쓰고 "~입니다", "~습니다", "~한다", "~할 수 있습니다"는 쓰지 않습니다. 비교는 표로 정리하고 적용 완료, 진행 중, 검토 중을 구분합니다. 기본값은 꺼짐입니다.
+
+| 기본 | 회사어투 |
+| --- | --- |
+| DB를 확인하고 고쳤습니다. | DB 확인 후 수정 완료 |
+| 서버를 재시작해야 합니다. | 서버 재시작 필요 |
+| 다음: 처음 실패한 줄을 붙여 주세요. | 다음: 처음 실패한 줄 전달 요청 |
+
+그 세션에서만 쓰려면 "회사어투 켜"라고 말합니다. 끌 때는 "회사어투 꺼"라고 말합니다.
+
+새 세션마다 자동으로 켜려면 플래그 파일을 만듭니다. 위의 항상 켜기 플래그가 함께 있어야 동작합니다. 파일을 지우면 꺼집니다.
+
+```bash
+# macOS, Linux, Git Bash
+touch ~/.claude/.korean-adhd-company
+```
+
+```powershell
+# PowerShell
+New-Item -ItemType File "$HOME\.claude\.korean-adhd-company"
+```
+
+메일, 공지, README, 사용자가 쓴 글의 윤문은 원래 격식을 유지합니다.
+
 ## 달라지는 점
 
 | 이전 | 이후 |
@@ -43,6 +69,7 @@ i-have-adhd를 쓰고 있다면 옮긴 뒤 끄기를 권장합니다. 함께 켜
 
 - `skills/korean-adhd/SKILL.md`: 매 세션 주입되는 규칙입니다. 훅 주입 한도인 10,000자 안에 들어가도록 관리합니다.
 - `skills/korean-adhd/references/korean-rules.md`: 문서를 쓰거나 글을 다듬을 때만 읽는 상세 규칙입니다.
+- `skills/korean-adhd/references/company-tone.md`: 회사어투 옵션 규칙입니다. 옵션을 켤 때만 적용합니다.
 - `hooks/`: 플래그가 있을 때 규칙을 주입하는 SessionStart 훅입니다. 실행하려면 Node.js가 필요합니다.
 - `tests/run.mjs`: 의존성 없는 테스트입니다. `node tests/run.mjs`로 실행합니다.
 
