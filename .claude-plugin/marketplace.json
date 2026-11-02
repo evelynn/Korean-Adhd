@@ -1,0 +1,16 @@
+{
+  "$schema": "https://www.schemastore.org/claude-code-marketplace.json",
+  "name": "korean-adhd",
+  "description": "ADHD 친화 답변 모양과 자연스러운 한국어를 합친 플러그인.",
+  "owner": {
+    "name": "Evelyn"
+  },
+  "plugins": [
+    {
+      "name": "korean-adhd",
+      "description": "행동 먼저, 번호 단계, 번역투·AI 관용구 없는 한국어 답변.",
+      "source": "./",
+      "category": "productivity"
+    }
+  ]
+}
