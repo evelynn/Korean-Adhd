@@ -11,6 +11,7 @@ const hook = path.join(root, "hooks", "always-on.mjs");
 const skillPath = path.join(root, "skills", "korean-adhd", "SKILL.md");
 const companyPath = path.join(root, "skills", "korean-adhd", "references", "company-tone.md");
 const readmePath = path.join(root, "README.md");
+const companyReadmePath = path.join(root, "README.company.md");
 const COMPANY_HEAD = "## 회사어투 옵션";
 const MAX_INJECTED_CHARS = 10000; // Claude Code 훅 출력 주입 한도
 
@@ -168,10 +169,36 @@ const tests = {
     }
   },
   "README 가 연결어미 뒤 쉼표를 쓰지 않는다"() {
-    const hits = fs
-      .readFileSync(readmePath, "utf8")
-      .split(/\r?\n/)
+    const hits = [readmePath, companyReadmePath]
+      .flatMap((f) => fs.readFileSync(f, "utf8").split(/\r?\n/))
       .filter((l) => /(하고|했고|되고|이고|않고|남기고|맞추고|녹이고|줄이고|빼고|넣고|하며|지만|면서|아서|어서|해서),\s/.test(l));
+    assert.deepEqual(hits, []);
+  },
+  "회사어투 README 가 기본 README 와 연결되고 제목과 명령이 같다"() {
+    const ko = fs.readFileSync(readmePath, "utf8");
+    const en = fs.readFileSync(path.join(root, "README.en.md"), "utf8");
+    const co = fs.readFileSync(companyReadmePath, "utf8");
+    assert.match(ko, /\(README\.company\.md\)/);
+    assert.match(en, /\(README\.company\.md\)/);
+    assert.match(co, /\(README\.md\)/);
+    assert.match(co, /\(README\.en\.md\)/);
+    const heads = (t) => [...t.matchAll(/^##+ (.+)$/gm)].map((m) => m[1]);
+    assert.deepEqual(heads(co), heads(ko));
+    const commands = (t) =>
+      [...new Set(t.split(/\r?\n/).map((l) => l.trim()).filter((l) => /^(\/plugin|\/korean-adhd|claude plugin|node tests|touch|rm -f|New-Item|Remove-Item)/.test(l)))].sort();
+    assert.deepEqual(commands(co), commands(ko));
+  },
+  "회사어투 README 본문이 금지 어미를 쓰지 않는다"() {
+    // 코드 블록·인용·문장 바꾸기 예시(기본 말투 원문)는 제외하고 표는 마지막 칸만 검사
+    const body = fs
+      .readFileSync(companyReadmePath, "utf8")
+      .replace(/```[\s\S]*?```/g, "")
+      .replace(/### 예시 4\.[\s\S]*?(?=\n## )/, "");
+    const hits = body
+      .split(/\r?\n/)
+      .filter((l) => !l.trim().startsWith(">"))
+      .map((l) => (l.startsWith("|") ? l.split("|").at(-2) ?? "" : l))
+      .filter((l) => /(입니다|습니다|합니다|한다|해요|까요\?)\.?(\s|$)/.test(l));
     assert.deepEqual(hits, []);
   },
   "공개되는 파일에 로컬 경로·개인 메일·사설 IP 가 없다"() {

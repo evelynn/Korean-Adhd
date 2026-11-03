@@ -1,6 +1,6 @@
 # Korean-Adhd
 
-[한국어](README.md) | **English**
+[한국어](README.md) | [한국어 회사어투](README.company.md) | **English**
 
 A Claude Code plugin that makes Korean replies immediately actionable and strips out translated-sounding phrasing and AI clichés.
 

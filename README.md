@@ -1,6 +1,6 @@
 # Korean-Adhd
 
-**한국어** | [English](README.en.md)
+**한국어** | [한국어 회사어투](README.company.md) | [English](README.en.md)
 
 Claude Code의 한국어 답변을 바로 행동할 수 있는 모양으로 바꾸고 번역투와 AI 상투구를 없애는 플러그인입니다.
 
