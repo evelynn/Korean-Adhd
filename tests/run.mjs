@@ -206,6 +206,12 @@ const tests = {
     const hits = rest.split(/\r?\n/).filter((l) => /[가-힣]/.test(l));
     assert.deepEqual(hits, []);
   },
+  "규칙이 '다음:' 줄을 필요할 때만 쓰도록 한다"() {
+    const rule = fs.readFileSync(skillPath, "utf8");
+    assert.match(rule, /"다음:" 줄은 사용자가 할 일이 실제로 있을 때만 쓴다/);
+    assert.match(rule, /억지로 만들지 않는다/);
+    assert.doesNotMatch(rule, /끝 줄의 "다음:"은 그대로 쓴다|일이 완전히 끝났을 때만 뺀다/);
+  },
   "문서가 '상투구'·'AI 관용구' 대신 'AI 특유의 표현'을 쓴다"() {
     const files = spawnSync("git", ["ls-files"], { cwd: root, encoding: "utf8" }).stdout.split(/\r?\n/).filter((f) => f && !f.startsWith("tests/"));
     for (const file of files) {

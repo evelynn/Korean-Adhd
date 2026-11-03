@@ -25,7 +25,7 @@ Takes about 2 minutes. You need Claude Code and Node.js. Without Node.js, a hook
    /korean-adhd:korean-adhd
    ```
 
-3. Ask anything. It is on if the first line is the action to take and the last line starts with `다음:` (Next:).
+3. Ask how to fix an error. It is on if the first line is the action to take.
 
 To turn it on automatically in every new session, create a flag file in your terminal. It applies from the next new session.
 

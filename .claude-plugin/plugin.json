@@ -1,6 +1,6 @@
 {
   "name": "korean-adhd",
-  "version": "0.2.2",
+  "version": "0.2.3",
   "description": "ADHD 독자를 위한 답변 모양(행동 먼저·번호 단계·곁가지 억제)에 한국어 윤문 규칙(번역투와 AI 특유의 표현 제거)을 합친 Claude Code 플러그인.",
   "author": {
     "name": "Evelyn",
