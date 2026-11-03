@@ -2,7 +2,7 @@
 
 [한국어 회사어투](README.md) | **한국어 기본어투** | [English](README.en.md)
 
-Claude Code의 한국어 답변을 바로 행동할 수 있는 모양으로 바꾸고 번역투와 AI 상투구를 없애는 플러그인입니다.
+Claude Code의 한국어 답변을 바로 행동할 수 있는 모양으로 바꾸고 번역투와 AI 특유의 표현을 없애는 플러그인입니다.
 
 [i-have-adhd](https://github.com/ayghri/i-have-adhd)의 답변 규칙과 [im-not-ai](https://github.com/epoko77-ai/im-not-ai)의 한국어 문체 규칙을 합쳤습니다.
 

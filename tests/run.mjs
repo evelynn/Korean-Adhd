@@ -206,6 +206,12 @@ const tests = {
     const hits = rest.split(/\r?\n/).filter((l) => /[가-힣]/.test(l));
     assert.deepEqual(hits, []);
   },
+  "문서가 '상투구'·'AI 관용구' 대신 'AI 특유의 표현'을 쓴다"() {
+    const files = spawnSync("git", ["ls-files"], { cwd: root, encoding: "utf8" }).stdout.split(/\r?\n/).filter((f) => f && !f.startsWith("tests/"));
+    for (const file of files) {
+      assert.doesNotMatch(fs.readFileSync(path.join(root, file), "utf8"), /상투구|AI 관용구/, file);
+    }
+  },
   "공개되는 파일에 로컬 경로·개인 메일·사설 IP 가 없다"() {
     const files = spawnSync("git", ["ls-files"], { cwd: root, encoding: "utf8" }).stdout.split(/\r?\n/).filter(Boolean);
     assert.ok(files.length > 0);

@@ -8,7 +8,7 @@
   "plugins": [
     {
       "name": "korean-adhd",
-      "description": "행동 먼저, 번호 단계, 번역투·AI 관용구 없는 한국어 답변.",
+      "description": "행동 먼저, 번호 단계, 번역투와 AI 특유의 표현이 없는 한국어 답변.",
       "source": "./",
       "category": "productivity"
     }
