@@ -10,8 +10,8 @@ const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
 const hook = path.join(root, "hooks", "always-on.mjs");
 const skillPath = path.join(root, "skills", "korean-adhd", "SKILL.md");
 const companyPath = path.join(root, "skills", "korean-adhd", "references", "company-tone.md");
-const readmePath = path.join(root, "README.md");
-const companyReadmePath = path.join(root, "README.company.md");
+const readmePath = path.join(root, "README.md"); // 메인 = 회사어투
+const defaultReadmePath = path.join(root, "README.default.md");
 const COMPANY_HEAD = "## 회사어투 옵션";
 const MAX_INJECTED_CHARS = 10000; // Claude Code 훅 출력 주입 한도
 
@@ -152,7 +152,7 @@ const tests = {
     const ko = fs.readFileSync(readmePath, "utf8");
     const en = fs.readFileSync(path.join(root, "README.en.md"), "utf8");
     assert.match(ko, /\[English\]\(README\.en\.md\)/);
-    assert.match(en, /\[한국어\]\(README\.md\)/);
+    assert.match(en, /\[한국어 회사어투\]\(README\.md\)/);
     const heads = (t) => [...t.matchAll(/^##+ /gm)].length;
     assert.equal(heads(en), heads(ko));
     const commands = (t) =>
@@ -163,29 +163,29 @@ const tests = {
     }
   },
   "README 가 연결어미 뒤 쉼표를 쓰지 않는다"() {
-    const hits = [readmePath, companyReadmePath]
+    const hits = [readmePath, defaultReadmePath]
       .flatMap((f) => fs.readFileSync(f, "utf8").split(/\r?\n/))
       .filter((l) => /(하고|했고|되고|이고|않고|남기고|맞추고|녹이고|줄이고|빼고|넣고|하며|지만|면서|아서|어서|해서),\s/.test(l));
     assert.deepEqual(hits, []);
   },
-  "회사어투 README 가 기본 README 와 연결되고 제목과 명령이 같다"() {
-    const ko = fs.readFileSync(readmePath, "utf8");
+  "회사어투 메인 README 가 기본어투 README 와 연결되고 제목과 명령이 같다"() {
+    const main = fs.readFileSync(readmePath, "utf8");
     const en = fs.readFileSync(path.join(root, "README.en.md"), "utf8");
-    const co = fs.readFileSync(companyReadmePath, "utf8");
-    assert.match(ko, /\(README\.company\.md\)/);
-    assert.match(en, /\(README\.company\.md\)/);
-    assert.match(co, /\(README\.md\)/);
-    assert.match(co, /\(README\.en\.md\)/);
+    const plain = fs.readFileSync(defaultReadmePath, "utf8");
+    assert.match(main, /\(README\.default\.md\)/);
+    assert.match(en, /\(README\.default\.md\)/);
+    assert.match(plain, /\(README\.md\)/);
+    assert.match(plain, /\(README\.en\.md\)/);
     const heads = (t) => [...t.matchAll(/^##+ (.+)$/gm)].map((m) => m[1]);
-    assert.deepEqual(heads(co), heads(ko));
+    assert.deepEqual(heads(plain), heads(main));
     const commands = (t) =>
       [...new Set(t.split(/\r?\n/).map((l) => l.trim()).filter((l) => /^(\/plugin|\/korean-adhd|claude plugin|node tests|touch|rm -f|New-Item|Remove-Item)/.test(l)))].sort();
-    assert.deepEqual(commands(co), commands(ko));
+    assert.deepEqual(commands(plain), commands(main));
   },
   "회사어투 README 는 예시까지 금지 어미를 쓰지 않는다"() {
     // 비교 기준인 "이전:"·"기본:" 인용과 표의 왼쪽 칸만 제외
     const body = fs
-      .readFileSync(companyReadmePath, "utf8")
+      .readFileSync(readmePath, "utf8")
       .replace(/```[\s\S]*?```/g, "")
       .replace(/(이전|기본):(\r?\n)+(>.*(\r?\n))+/g, "");
     const hits = body
@@ -198,7 +198,7 @@ const tests = {
     // 언어 전환 링크와 사용자가 그대로 입력·확인하는 문구만 한글 허용
     const rest = fs
       .readFileSync(path.join(root, "README.en.md"), "utf8")
-      .replace("[한국어](README.md) | [한국어 회사어투](README.company.md)", "")
+      .replace("[한국어 회사어투](README.md) | [한국어 기본어투](README.default.md)", "")
       .replaceAll("`다음:`", "")
       .replaceAll('"회사어투 켜"', "")
       .replaceAll('"회사어투 꺼"', "")

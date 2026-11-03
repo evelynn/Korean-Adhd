@@ -1,31 +1,33 @@
 # Korean-Adhd
 
-**한국어** | [한국어 회사어투](README.company.md) | [English](README.en.md)
+**한국어 회사어투** | [한국어 기본어투](README.default.md) | [English](README.en.md)
 
-Claude Code의 한국어 답변을 바로 행동할 수 있는 모양으로 바꾸고 번역투와 AI 상투구를 없애는 플러그인입니다.
+Claude Code 한국어 답변을 바로 행동 가능한 형태로 변경. 번역투와 AI 상투구 제거.
 
-[i-have-adhd](https://github.com/ayghri/i-have-adhd)의 답변 규칙과 [im-not-ai](https://github.com/epoko77-ai/im-not-ai)의 한국어 문체 규칙을 합쳤습니다.
+[i-have-adhd](https://github.com/ayghri/i-have-adhd) 답변 규칙과 [im-not-ai](https://github.com/epoko77-ai/im-not-ai) 한국어 문체 규칙 통합.
 
 ## 설치
 
-약 2분 걸립니다. Claude Code와 Node.js가 필요합니다. Node.js가 없으면 세션을 시작할 때마다 훅 오류가 기록되지만 세션은 계속됩니다.
+- 소요 시간: 약 2분
+- 필요 항목: Claude Code, Node.js
+- Node.js 없을 경우: 세션 시작마다 훅 오류 기록, 세션은 계속 진행됨
 
-1. Claude Code 세션 안에서 플러그인을 설치합니다.
+1. Claude Code 세션 안에서 플러그인 설치.
 
    ```
    /plugin marketplace add evelynn/Korean-Adhd
    /plugin install korean-adhd@korean-adhd
    ```
 
-2. 새 세션을 열고(`/exit` 후 `claude`) 규칙을 켭니다.
+2. 새 세션 시작(`/exit` 후 `claude`) 후 규칙 활성화.
 
    ```
    /korean-adhd:korean-adhd
    ```
 
-3. 아무 질문이나 합니다. 첫 줄이 할 일이고 끝 줄이 `다음:`으로 시작하면 켜졌습니다.
+3. 아무 질문이나 입력. 첫 줄이 할 일이고 끝 줄이 `다음:`으로 시작하면 정상 적용.
 
-새 세션마다 자동으로 켜려면 터미널에서 플래그 파일을 만듭니다. 다음 새 세션부터 적용됩니다.
+새 세션마다 자동 활성화 필요 시 터미널에서 플래그 파일 생성. 다음 새 세션부터 적용.
 
 ```bash
 # macOS, Linux, Git Bash
@@ -37,16 +39,22 @@ touch ~/.claude/.korean-adhd-always
 New-Item -ItemType File "$HOME\.claude\.korean-adhd-always"
 ```
 
-i-have-adhd를 쓰고 있었다면 터미널에서 `claude plugin disable i-have-adhd@i-have-adhd`로 끕니다. 함께 켜도 Claude는 이 플러그인의 규칙을 따르지만 비슷한 규칙이 두 번 들어갑니다.
+i-have-adhd 사용 중이면 터미널에서 `claude plugin disable i-have-adhd@i-have-adhd` 실행 권장.
+
+사유: 함께 켜도 Claude는 이 플러그인 규칙을 따르지만 비슷한 규칙이 두 번 주입됨.
 
 ## 회사어투 옵션
 
-답변을 회사 보고서의 보고체로 줄입니다. 채팅 답변과 업무 보고서에 적용되고 기본값은 꺼짐입니다. 규칙은 [`references/company-tone.md`](skills/korean-adhd/references/company-tone.md)에 있습니다.
+답변을 회사 보고서 보고체로 축약.
 
-켜는 방법은 두 가지입니다.
+- 적용 범위: 채팅 답변, 업무 보고서
+- 기본값: 꺼짐
+- 규칙 파일: [`references/company-tone.md`](skills/korean-adhd/references/company-tone.md)
 
-1. 지금 세션에서만 쓰려면 `/korean-adhd:korean-adhd`로 규칙을 켠 뒤 "회사어투 켜"라고 말합니다. 끌 때는 "회사어투 꺼"라고 말합니다.
-2. 새 세션마다 쓰려면 플래그 파일을 만듭니다. `.korean-adhd-always` 파일이 함께 있어야 동작합니다.
+켜는 방법 2가지.
+
+1. 현재 세션만 적용: `/korean-adhd:korean-adhd`로 규칙 활성화 후 "회사어투 켜" 입력. 해제는 "회사어투 꺼" 입력.
+2. 새 세션마다 적용: 플래그 파일 생성. `.korean-adhd-always` 파일 함께 필요.
 
    ```bash
    # macOS, Linux, Git Bash
@@ -71,7 +79,7 @@ i-have-adhd를 쓰고 있었다면 터미널에서 `claude plugin disable i-have
 
 ### 보고 예시
 
-규칙을 설명하려고 직접 쓴 글입니다.
+규칙 설명용으로 직접 작성한 글.
 
 기본:
 
@@ -91,7 +99,7 @@ i-have-adhd를 쓰고 있었다면 터미널에서 `claude plugin disable i-have
 
 ## 적용 예시
 
-아래 예시는 규칙을 설명하려고 직접 쓴 글입니다. 실제 답변은 모델과 대화 내용에 따라 달라집니다.
+아래 예시는 규칙 설명용으로 직접 작성한 글. 회사어투 적용 기준. 실제 답변은 모델과 대화 내용에 따라 달라짐.
 
 ### 예시 1. 오류를 고칠 때
 
@@ -103,14 +111,16 @@ i-have-adhd를 쓰고 있었다면 터미널에서 `claude plugin disable i-have
 
 이후:
 
-> `src/auth.ts:42`의 `verifyToken`을 고치세요. 요청의 `Authorization` 헤더를 읽지 않습니다.
+> `src/auth.ts:42`의 `verifyToken` 수정 필요.
 >
-> 1. 42번째 줄에서 헤더를 읽도록 바꿉니다.
-> 2. `npm test -- auth.spec.ts`를 실행합니다.
+> 사유: 요청의 `Authorization` 헤더를 읽지 않음.
 >
-> 다음: 테스트가 실패하면 처음 실패한 줄을 붙여 주세요.
+> 1. 42번째 줄에서 헤더 읽도록 수정.
+> 2. `npm test -- auth.spec.ts` 실행.
+>
+> 다음: 테스트 실패 시 처음 실패한 줄 전달 요청.
 
-첫 줄이 할 일로 바뀌었습니다. 의존성 이야기는 지금 문제가 끝난 뒤 따로 묻습니다.
+첫 줄을 할 일로 변경. 의존성 이야기는 현재 문제 종료 후 별도 확인.
 
 ### 예시 2. 작업이 길어질 때
 
@@ -122,11 +132,11 @@ i-have-adhd를 쓰고 있었다면 터미널에서 `claude plugin disable i-have
 
 이후:
 
-> 3/5단계 완료: 인증 문서를 옮겼습니다. 남은 시간은 약 5분입니다.
+> 3/5단계 완료: 인증 문서 번역. 남은 시간 약 5분.
 >
-> 다음: 결제 문서를 옮깁니다.
+> 다음: 결제 문서 번역 예정.
 
-어디까지 됐는지 매번 다시 말하고 시간은 숫자로 씁니다.
+진행 위치를 매번 재표기. 시간은 숫자로 표기.
 
 ### 예시 3. 되돌리기 어려운 작업
 
@@ -134,35 +144,41 @@ i-have-adhd를 쓰고 있었다면 터미널에서 `claude plugin disable i-have
 
 이후:
 
-> 지우기 전에 확인이 필요합니다. 대상은 12개이고 그중 `feature/payment`와 `fix/login`은 병합되지 않았습니다. 지우면 이 두 브랜치의 커밋을 찾기 어렵습니다.
+> 삭제 전 확인 필요.
 >
-> 다음: 병합된 10개만 지울지 12개 모두 지울지 알려 주세요.
+> 대상: 12개. `feature/payment`, `fix/login` 미병합.
+>
+> 삭제 시 두 브랜치 커밋 찾기 어려움.
+>
+> 다음: 병합된 10개만 삭제·12개 전체 삭제 중 선택 요청.
 
-삭제, 강제 push, 스키마 변경은 확인을 먼저 받습니다.
+삭제, 강제 push, 스키마 변경은 사전 확인 필수.
 
 ### 예시 4. 문장 바꾸기
 
 | 이전 | 이후 |
 | --- | --- |
-| 배포에 있어서 중요한 점은 환경 변수입니다. | 배포에서 중요한 건 환경 변수입니다. |
-| 스크립트에 의해 생성된 파일을 통해 검증을 진행합니다. | 스크립트가 만든 파일로 검증합니다. |
-| 강한 성능을 가지고 있습니다. | 성능이 좋습니다. |
-| 결론적으로, 캐시가 원인이라는 것입니다. | 원인은 캐시입니다. |
+| 배포에 있어서 중요한 점은 환경 변수입니다. | 배포 시 중요 항목: 환경 변수 |
+| 스크립트에 의해 생성된 파일을 통해 검증을 진행합니다. | 스크립트 생성 파일로 검증 |
+| 강한 성능을 가지고 있습니다. | 성능 좋음 |
+| 결론적으로, 캐시가 원인이라는 것입니다. | 원인: 캐시 |
 
 ## 켜기와 끄기
 
 | 하려는 일 | 방법 |
 | --- | --- |
 | 이 세션에서만 켜기 | `/korean-adhd:korean-adhd` 입력 |
-| 이 세션에서 끄기 | "ADHD 모드 꺼", "normal mode", "stop adhd mode" 중 하나를 말하기 |
-| 새 세션마다 켜기 | `~/.claude/.korean-adhd-always` 파일 만들기 |
-| 새 세션마다 켜기 해제 | 위 파일 지우기 |
-| 이 세션에서 회사어투 켜기·끄기 | 규칙을 켠 뒤 "회사어투 켜", "회사어투 꺼"라고 말하기 |
-| 새 세션마다 회사어투 켜기 | `~/.claude/.korean-adhd-company` 파일 만들기 |
-| 새 세션마다 회사어투 켜기 해제 | 위 파일 지우기 |
+| 이 세션에서 끄기 | "ADHD 모드 꺼", "normal mode", "stop adhd mode" 중 하나 입력 |
+| 새 세션마다 켜기 | `~/.claude/.korean-adhd-always` 파일 생성 |
+| 새 세션마다 켜기 해제 | 위 파일 삭제 |
+| 이 세션에서 회사어투 켜기·끄기 | 규칙 활성화 후 "회사어투 켜", "회사어투 꺼" 입력 |
+| 새 세션마다 회사어투 켜기 | `~/.claude/.korean-adhd-company` 파일 생성 |
+| 새 세션마다 회사어투 켜기 해제 | 위 파일 삭제 |
 
-회사어투 파일은 `.korean-adhd-always` 파일이 함께 있어야 동작합니다. 항상 켜기 파일이 있으면 세션 중에 껐더라도 대화 압축이나 `/clear` 뒤에 규칙이 다시 들어갑니다.
+회사어투 파일은 `.korean-adhd-always` 파일 함께 필요.
+
+항상 켜기 파일이 있으면 세션 중 해제해도 대화 압축이나 `/clear` 후 규칙 재주입됨.
 
 ## 라이선스
 
-MIT. 두 원작의 저작권 표시는 [`LICENSE`](LICENSE)에 함께 실었습니다.
+MIT. 두 원작 저작권 표시는 [`LICENSE`](LICENSE)에 함께 수록.
