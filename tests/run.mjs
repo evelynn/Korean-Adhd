@@ -139,16 +139,10 @@ const tests = {
     assert.match(frontmatter, /\/korean-adhd:korean-adhd/);
     assert.doesNotMatch(frontmatter, /\/korean-adhd(?!:)/);
   },
-  "README 가 설치·예시·문제 해결·개선점·참조를 안내하고 설치를 맨 앞에 둔다"() {
+  "README 는 소개·설치·회사어투·예시·켜고 끄기·라이선스만 둔다"() {
     const readme = fs.readFileSync(readmePath, "utf8");
     const heads = [...readme.matchAll(/^## (.+)$/gm)].map((m) => m[1]);
-    assert.equal(heads[0], "설치");
-    assert.deepEqual(heads.slice(1, 3), ["회사어투 옵션", "원작 대비 개선점"]);
-    assert.ok(readme.indexOf("#회사어투-옵션") < readme.indexOf("## 설치"));
-    assert.ok(readme.indexOf("#원작-대비-개선점") < readme.indexOf("## 설치"));
-    for (const head of ["적용 예시", "문제 해결", "업데이트와 제거", "원작 대비 개선점", "앞으로 개선할 점", "참조"]) {
-      assert.ok(heads.includes(head), head);
-    }
+    assert.deepEqual(heads, ["설치", "회사어투 옵션", "적용 예시", "켜기와 끄기", "라이선스"]);
     assert.match(readme, /\/plugin marketplace add evelynn\/Korean-Adhd/);
     assert.match(readme, /\/korean-adhd:korean-adhd/);
     assert.match(readme, /github\.com\/ayghri\/i-have-adhd/);
@@ -188,17 +182,28 @@ const tests = {
       [...new Set(t.split(/\r?\n/).map((l) => l.trim()).filter((l) => /^(\/plugin|\/korean-adhd|claude plugin|node tests|touch|rm -f|New-Item|Remove-Item)/.test(l)))].sort();
     assert.deepEqual(commands(co), commands(ko));
   },
-  "회사어투 README 본문이 금지 어미를 쓰지 않는다"() {
-    // 코드 블록·인용·문장 바꾸기 예시(기본 말투 원문)는 제외하고 표는 마지막 칸만 검사
+  "회사어투 README 는 예시까지 금지 어미를 쓰지 않는다"() {
+    // 비교 기준인 "이전:"·"기본:" 인용과 표의 왼쪽 칸만 제외
     const body = fs
       .readFileSync(companyReadmePath, "utf8")
       .replace(/```[\s\S]*?```/g, "")
-      .replace(/### 예시 4\.[\s\S]*?(?=\n## )/, "");
+      .replace(/(이전|기본):(\r?\n)+(>.*(\r?\n))+/g, "");
     const hits = body
       .split(/\r?\n/)
-      .filter((l) => !l.trim().startsWith(">"))
       .map((l) => (l.startsWith("|") ? l.split("|").at(-2) ?? "" : l))
-      .filter((l) => /(입니다|습니다|합니다|한다|해요|까요\?)\.?(\s|$)/.test(l));
+      .filter((l) => /(입니다|습니다|합니다|한다|해요|세요|까요\?)\.?(\s|$)/.test(l));
+    assert.deepEqual(hits, []);
+  },
+  "영어 README 는 예시까지 영어로 쓴다"() {
+    // 언어 전환 링크와 사용자가 그대로 입력·확인하는 문구만 한글 허용
+    const rest = fs
+      .readFileSync(path.join(root, "README.en.md"), "utf8")
+      .replace("[한국어](README.md) | [한국어 회사어투](README.company.md)", "")
+      .replaceAll("`다음:`", "")
+      .replaceAll('"회사어투 켜"', "")
+      .replaceAll('"회사어투 꺼"', "")
+      .replaceAll('"ADHD 모드 꺼"', "");
+    const hits = rest.split(/\r?\n/).filter((l) => /[가-힣]/.test(l));
     assert.deepEqual(hits, []);
   },
   "공개되는 파일에 로컬 경로·개인 메일·사설 IP 가 없다"() {
