@@ -113,7 +113,7 @@ i-have-adhd 사용 중이면 터미널에서 `claude plugin disable i-have-adhd@
 
 > `src/auth.ts:42`의 `verifyToken` 수정 필요.
 >
-> 사유: 요청의 `Authorization` 헤더 미확인.
+> 사유: 요청의 `Authorization` 헤더를 읽지 않음.
 >
 > 1. 42번째 줄에서 헤더 읽도록 수정.
 > 2. `npm test -- auth.spec.ts` 실행.
