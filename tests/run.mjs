@@ -10,6 +10,7 @@ const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
 const hook = path.join(root, "hooks", "always-on.mjs");
 const skillPath = path.join(root, "skills", "korean-adhd", "SKILL.md");
 const companyPath = path.join(root, "skills", "korean-adhd", "references", "company-tone.md");
+const readmePath = path.join(root, "README.md");
 const COMPANY_HEAD = "## 회사어투 옵션";
 const MAX_INJECTED_CHARS = 10000; // Claude Code 훅 출력 주입 한도
 
@@ -131,6 +132,57 @@ const tests = {
     const license = fs.readFileSync(path.join(root, "LICENSE"), "utf8");
     assert.match(license, /Ayoub Ghriss/);
     assert.match(license, /epoko77-ai/);
+  },
+  "SKILL.md 설명이 플러그인 스킬 호출명을 쓴다"() {
+    const frontmatter = fs.readFileSync(skillPath, "utf8").split("---")[1];
+    assert.match(frontmatter, /\/korean-adhd:korean-adhd/);
+    assert.doesNotMatch(frontmatter, /\/korean-adhd(?!:)/);
+  },
+  "README 가 설치·예시·문제 해결·개선점·참조를 안내하고 설치를 맨 앞에 둔다"() {
+    const readme = fs.readFileSync(readmePath, "utf8");
+    const heads = [...readme.matchAll(/^## (.+)$/gm)].map((m) => m[1]);
+    assert.equal(heads[0], "설치");
+    assert.deepEqual(heads.slice(1, 3), ["회사어투 옵션", "원작 대비 개선점"]);
+    assert.ok(readme.indexOf("#회사어투-옵션") < readme.indexOf("## 설치"));
+    assert.ok(readme.indexOf("#원작-대비-개선점") < readme.indexOf("## 설치"));
+    for (const head of ["적용 예시", "문제 해결", "업데이트와 제거", "원작 대비 개선점", "앞으로 개선할 점", "참조"]) {
+      assert.ok(heads.includes(head), head);
+    }
+    assert.match(readme, /\/plugin marketplace add evelynn\/Korean-Adhd/);
+    assert.match(readme, /\/korean-adhd:korean-adhd/);
+    assert.match(readme, /github\.com\/ayghri\/i-have-adhd/);
+    assert.match(readme, /github\.com\/epoko77-ai\/im-not-ai/);
+  },
+  "한국어·영어 README 가 서로 연결되고 절 수와 명령이 같다"() {
+    const ko = fs.readFileSync(readmePath, "utf8");
+    const en = fs.readFileSync(path.join(root, "README.en.md"), "utf8");
+    assert.match(ko, /\[English\]\(README\.en\.md\)/);
+    assert.match(en, /\[한국어\]\(README\.md\)/);
+    const heads = (t) => [...t.matchAll(/^##+ /gm)].length;
+    assert.equal(heads(en), heads(ko));
+    const commands = (t) =>
+      [...new Set(t.split(/\r?\n/).map((l) => l.trim()).filter((l) => /^(\/plugin|\/korean-adhd|claude plugin|node tests|touch|rm -f|New-Item|Remove-Item)/.test(l)))].sort();
+    assert.deepEqual(commands(en), commands(ko));
+    for (const anchor of en.matchAll(/\]\(#([^)]+)\)/g)) {
+      assert.ok(new RegExp("^##+ " + anchor[1].replaceAll("-", " ") + "$", "im").test(en), anchor[1]);
+    }
+  },
+  "README 가 연결어미 뒤 쉼표를 쓰지 않는다"() {
+    const hits = fs
+      .readFileSync(readmePath, "utf8")
+      .split(/\r?\n/)
+      .filter((l) => /(하고|했고|되고|이고|않고|남기고|맞추고|녹이고|줄이고|빼고|넣고|하며|지만|면서|아서|어서|해서),\s/.test(l));
+    assert.deepEqual(hits, []);
+  },
+  "공개되는 파일에 로컬 경로·개인 메일·사설 IP 가 없다"() {
+    const files = spawnSync("git", ["ls-files"], { cwd: root, encoding: "utf8" }).stdout.split(/\r?\n/).filter(Boolean);
+    assert.ok(files.length > 0);
+    for (const file of files) {
+      const text = fs.readFileSync(path.join(root, file), "utf8");
+      assert.doesNotMatch(text, /[A-Za-z]:[\\/]\w/, file);
+      assert.doesNotMatch(text, /@(gmail|naver|daum|hanmail)\.(com|net)/, file);
+      assert.doesNotMatch(text, /\b(10\.\d+\.\d+\.\d+|192\.168\.\d+\.\d+|172\.(1[6-9]|2\d|3[01])\.\d+\.\d+)\b/, file);
+    }
   },
 };
 

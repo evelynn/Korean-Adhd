@@ -1,6 +1,6 @@
 ---
 name: korean-adhd
-description: '한국어 독자를 위한 ADHD 친화 답변 규칙. 첫 줄에 다음 행동을 두고, 단계에 번호를 매기고, 번역투·AI 관용구를 걷어내 사람이 쓴 한국어로 답한다. /korean-adhd 로 켜고 "stop adhd mode", "normal mode", "ADHD 모드 꺼"로 끈다.'
+description: '한국어 독자를 위한 ADHD 친화 답변 규칙. 첫 줄에 다음 행동을 두고, 단계에 번호를 매기고, 번역투·AI 관용구를 걷어내 사람이 쓴 한국어로 답한다. /korean-adhd:korean-adhd 로 켜고 "stop adhd mode", "normal mode", "ADHD 모드 꺼"로 끈다.'
 disable-model-invocation: true
 license: MIT
 ---
