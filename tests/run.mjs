@@ -84,6 +84,8 @@ const tests = {
     assert.match(rule, /항목별 비교는 표로 정리/);
     assert.match(rule, /적용 완료, 진행 중, 검토 중/);
     assert.match(rule, /확인되지 않은 내용 추측 금지/);
+    assert.match(rule, /"사유:"에는 확인된 원인만 기재/);
+    assert.match(rule, /점검만 한 일을 결함 발견처럼 표기 금지/);
     assert.match(rule, /기술 용어, 수치, 검증 결과는 원문 의미 유지/);
     assert.match(rule, /3장의 짧게와 자연스럽게보다 이 장 우선/);
   },
@@ -123,16 +125,43 @@ const tests = {
     assert.match(frontmatter, new RegExp(`^name: ${plugin.name}$`, "m"));
   },
   "규칙 문서가 스스로 연결어미 뒤 쉼표를 쓰지 않는다"() {
-    const lines = [skillPath, companyPath].flatMap((f) => fs.readFileSync(f, "utf8").split(/\r?\n/));
+    const rulesPath = path.join(root, "skills", "korean-adhd", "references", "korean-rules.md");
+    const lines = [skillPath, companyPath, rulesPath].flatMap((f) => fs.readFileSync(f, "utf8").split(/\r?\n/));
     const hits = lines.filter(
       (l) => /(하고|했고|되고|이고|않고|남기고|맞추고|녹이고|줄이고|빼고|넣고|하며|지만|면서|아서|어서|해서),\s/.test(l) && !l.includes("찍지 않는다"),
     );
     assert.deepEqual(hits, []);
   },
-  "두 원작의 MIT 저작권 표시를 유지한다"() {
+  "세 원작의 MIT 저작권 표시를 유지한다"() {
     const license = fs.readFileSync(path.join(root, "LICENSE"), "utf8");
     assert.match(license, /Ayoub Ghriss/);
     assert.match(license, /epoko77-ai/);
+    assert.match(license, /Copyright \(c\) 2026 K-Humanizer contributors/);
+    assert.match(license, /github\.com\/evergreentree97\/K-Humanizer/);
+  },
+  "윤문 규칙이 고칠 이유·자연스러운 글 유지·결과 반환·연결 보존을 명시한다"() {
+    const rule = fs.readFileSync(skillPath, "utf8");
+    assert.match(rule, /윤문은 다섯 가지를 지킨다/);
+    assert.match(rule, /고칠 이유를 댈 수 있는 곳만 고친다/);
+    assert.match(rule, /이미 자연스러운 글은 그대로 돌려준다/);
+    assert.match(rule, /결과는 붙여 넣을 글부터 쓴다/);
+    assert.match(rule, /원인·대비·순서를 잇는 말은 줄일 때도 남긴다/);
+    assert.match(rule, /"만·최대·약" 같은 한정어/);
+    assert.match(rule, /영어를 한국어로 옮기거나 번역을 원문과 대조/);
+  },
+  "긴 글 규칙이 번역·읽는 사람 기준·연결 관계를 담고 출처를 밝힌다"() {
+    const rules = fs.readFileSync(path.join(root, "skills", "korean-adhd", "references", "korean-rules.md"), "utf8");
+    assert.match(rules, /\[K-Humanizer\]\(https:\/\/github\.com\/evergreentree97\/K-Humanizer\)/);
+    assert.match(rules, /커밋 `c24b2c5`/);
+    for (const head of ["고칠지 판단하기", "## K. 번역·현지화", "## L. 읽는 사람 기준", "## M. 연결 관계", "## 장르별 기준", "## 결과 돌려주기"]) {
+      assert.ok(rules.includes(head), head);
+    }
+    const ids = (p, n) => Array.from({ length: n }, (_, i) => `**${p}-${i + 1}**`);
+    for (const id of [...ids("K", 8), ...ids("L", 9), ...ids("M", 5)]) assert.ok(rules.includes(id), id);
+    // 점검 목록은 번호가 끊기지 않는다
+    const checks = rules.split("## 다 쓴 뒤 점검")[1].match(/^\d+\./gm).map((s) => parseInt(s, 10));
+    assert.deepEqual(checks, Array.from({ length: checks.length }, (_, i) => i + 1));
+    assert.ok(checks.length >= 10);
   },
   "SKILL.md 설명이 플러그인 스킬 호출명을 쓴다"() {
     const frontmatter = fs.readFileSync(skillPath, "utf8").split("---")[1];
@@ -147,6 +176,9 @@ const tests = {
     assert.match(readme, /\/korean-adhd:korean-adhd/);
     assert.match(readme, /github\.com\/ayghri\/i-have-adhd/);
     assert.match(readme, /github\.com\/epoko77-ai\/im-not-ai/);
+    for (const f of [readmePath, defaultReadmePath, path.join(root, "README.en.md")]) {
+      assert.match(fs.readFileSync(f, "utf8"), /github\.com\/evergreentree97\/K-Humanizer/, f);
+    }
   },
   "한국어·영어 README 가 서로 연결되고 절 수와 명령이 같다"() {
     const ko = fs.readFileSync(readmePath, "utf8");

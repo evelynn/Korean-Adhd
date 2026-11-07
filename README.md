@@ -4,7 +4,7 @@
 
 Claude Code 한국어 답변을 바로 행동 가능한 형태로 변경. 번역투와 AI 특유의 표현 제거.
 
-[i-have-adhd](https://github.com/ayghri/i-have-adhd) 답변 규칙과 [im-not-ai](https://github.com/epoko77-ai/im-not-ai) 한국어 문체 규칙 통합.
+[i-have-adhd](https://github.com/ayghri/i-have-adhd) 답변 규칙, [im-not-ai](https://github.com/epoko77-ai/im-not-ai) 한국어 문체 규칙, [K-Humanizer](https://github.com/evergreentree97/K-Humanizer) 윤문·번역 판단 기준 통합.
 
 ## 설치
 
@@ -181,4 +181,4 @@ i-have-adhd 사용 중이면 터미널에서 `claude plugin disable i-have-adhd@
 
 ## 라이선스
 
-MIT. 두 원작 저작권 표시는 [`LICENSE`](LICENSE)에 함께 수록.
+MIT. 세 원작 저작권 표시는 [`LICENSE`](LICENSE)에 함께 수록.
