@@ -87,7 +87,8 @@ const tests = {
     assert.match(rule, /"사유:"에는 확인된 원인만 기재/);
     assert.match(rule, /점검만 한 일을 결함 발견처럼 표기 금지/);
     assert.match(rule, /기술 용어, 수치, 검증 결과는 원문 의미 유지/);
-    assert.match(rule, /3장의 짧게와 자연스럽게보다 이 장 우선/);
+    assert.match(rule, /3장 일반어체 절 대신 이 장 적용/);
+    assert.match(rule, /1·2·4·5장과 보내기 전 점검은 그대로 적용/);
   },
   "회사어투 예시의 고친 쪽은 금지한 어미로 끝나지 않는다"() {
     const rows = fs.readFileSync(companyPath, "utf8").split(/\r?\n/).filter((l) => /^\| /.test(l)).slice(1);
@@ -148,6 +149,32 @@ const tests = {
     assert.match(rule, /원인·대비·순서를 잇는 말은 줄일 때도 남긴다/);
     assert.match(rule, /"만·최대·약" 같은 한정어/);
     assert.match(rule, /영어를 한국어로 옮기거나 번역을 원문과 대조/);
+  },
+  "어체별 규칙이 공통·일반어체·회사어투로 나뉜다"() {
+    const rule = fs.readFileSync(skillPath, "utf8");
+    const at = (s) => {
+      const i = rule.indexOf(s);
+      assert.ok(i >= 0, s);
+      return i;
+    };
+    const ch2 = at("## 2장. 한국어 문장");
+    const ch3 = at("## 3장. 어체");
+    const plain = at("### 일반어체");
+    const company = at("### 회사어투");
+    const ch4 = at("## 4장.");
+    assert.ok(ch2 < ch3 && ch3 < plain && plain < company && company < ch4);
+    assert.match(rule, /\| 대상 \| 일반어체\(기본\) \| 회사어투 켜짐 \|/);
+    // 일반어체 전용 규칙은 일반어체 절에만, 사실·연결 보존은 공통(2장)에만 있다
+    for (const s of ["조사를 빼서 줄이지 않는다", "전보문처럼 조사를 깎아", "단서가 없으면 \"~합니다\"를 쓴다"]) {
+      const i = at(s);
+      assert.ok(plain < i && i < company, s);
+      assert.equal(rule.indexOf(s, i + 1), -1, s);
+    }
+    for (const s of ["원인·대비·순서를 잇는 말은 줄일 때도 남긴다", "\"만·최대·약\" 같은 한정어"]) {
+      const i = at(s);
+      assert.ok(ch2 < i && i < ch3, s);
+    }
+    assert.doesNotMatch(rule, /두 규칙이 부딪힐 때/);
   },
   "긴 글 규칙이 번역·읽는 사람 기준·연결 관계를 담고 출처를 밝힌다"() {
     const rules = fs.readFileSync(path.join(root, "skills", "korean-adhd", "references", "korean-rules.md"), "utf8");
